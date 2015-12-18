@@ -13,6 +13,7 @@ December 18, 2015
 import xml.etree.ElementTree as ET
 import csv
 import argparse
+import logging as log
 
 class Consecutive:
     def __init__(self, initval = 0):
@@ -128,11 +129,13 @@ def _make_vehicles(topid, reference):
     for vehicle in range(3):
         vehicle = ET.Element('VrpVehicle', id=topid.next())
         vehicle_id = ET.SubElement(vehicle, 'id')
-        vehicle_wear = ET.SubElement(vehicle, 'wear')
+        vehicle_capacity = ET.SubElement(vehicle, 'capacity')
+        vehicle_weight = ET.SubElement(vehicle, 'weight')
         vehicle_depot = ET.SubElement(vehicle, 'depot', {'reference': str(reference)})
 
         vehicle_id.text = str(i)
-        vehicle_wear = str(100)
+        vehicle_capacity = str(1000)
+        vehicle_weight = str(10)
 
         i +=1
         vehicleList.append(vehicle)
@@ -163,5 +166,7 @@ def main():
     solution = make_xml(gift_list)
 
     ET.ElementTree(solution).write(params['xml'])
+
+    log.info('Written {} optaplanner solution'.format(params['xml']))
 
 main()
