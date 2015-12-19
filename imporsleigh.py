@@ -29,13 +29,13 @@ def get_params():
     - csv: a local CSV file to convert to XML
     - xml: the name of the output XML file."""
 
-    parser = argparse.ArgumentParser(description='Charts an OptaPlanner <VrpTimeWindowedVehicleRoutingSolution> XML file.')
+    parser = argparse.ArgumentParser(description='Charts an OptaPlanner <VrpVehicleRoutingSolution> XML file.')
 
     parser.add_argument('csv', nargs=1, type=str, metavar='<CSV File>',
                         help='The CSV file to convert.')
 
     parser.add_argument('xml', nargs=1, type=str, metavar='<XML File>',
-                        help='The <VrpTimeWindowedVehicleRoutingSolution> file to be created.')
+                        help='The <VrpVehicleRoutingSolution> file to be created.')
 
     args = parser.parse_args()
 
@@ -92,17 +92,17 @@ def _make_customers(gift_list, topid):
     reference = 3
 
     for gift in gift_list:
-        customer = ET.Element('VrpTimeWindowedCustomer', id=topid.next())
+        customer = ET.Element('VrpCustomer', id=topid.next())
 
         customer_id = ET.SubElement (customer, 'id')
-        customer_weight = ET.SubElement (customer, 'weight')
+        customer_demand = ET.SubElement (customer, 'demand')
 
         attrib = {'reference': str(reference),
                   'clas': 'VrpAirLocation'}
         customer_location = ET.SubElement (customer, 'location',attrib=attrib)
 
         customer_id.text = gift[0]
-        customer_weight.text = gift[3]
+        customer_demand.text = gift[3]
 
         customerlist.append(customer)
 
@@ -113,7 +113,7 @@ def _make_customers(gift_list, topid):
 
 def _make_depot(topid, reference):
     depots = ET.Element('depotList', id=topid.next())
-    depot = ET.SubElement(depots, 'VrpTimeWindowedDepot', {'id': topid.next()})
+    depot = ET.SubElement(depots, 'VrpDepot', {'id': topid.next()})
 
     depot_id = ET.SubElement(depot, 'id')
     depot_id.text = '1'
@@ -134,8 +134,8 @@ def _make_vehicles(topid, reference):
         vehicle_depot = ET.SubElement(vehicle, 'depot', {'reference': str(reference)})
 
         vehicle_id.text = str(i)
-        vehicle_capacity = str(1000)
-        vehicle_weight = str(10)
+        vehicle_capacity.text = str(1000)
+        vehicle_weight.text = str(10)
 
         i +=1
         vehicleList.append(vehicle)
@@ -145,7 +145,7 @@ def _make_vehicles(topid, reference):
 
 def make_xml(gift_list):
     topid = Consecutive()
-    solution = ET.Element('VrpTimeWindowedVehicleRoutingSolution', id=topid.next())
+    solution = ET.Element('VrpVehicleRoutingSolution', id=topid.next())
 
     locations, lref = _make_locations(gift_list, topid)
     customers = _make_customers(gift_list, topid)
